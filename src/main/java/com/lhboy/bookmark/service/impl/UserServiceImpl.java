@@ -19,7 +19,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public User findByEmail(String email) {
-        return getOne(new LambdaQueryWrapper<User>().eq(User::getEmail, email));
+        return lambdaQuery().eq(User::getEmail, email).one();
     }
 
     @Override

@@ -69,6 +69,8 @@ public class AuthServiceImpl extends ServiceImpl<UserMapper, User> implements Au
                 .id(user.getId())
                 .email(user.getEmail())
                 .displayName(user.getDisplayName())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     };
 }

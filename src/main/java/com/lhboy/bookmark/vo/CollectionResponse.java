@@ -9,21 +9,24 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@ApiModel("用户信息")
+@ApiModel("收藏夹")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponse {
+public class CollectionResponse {
 
     @ApiModelProperty("id")
     private Long id;
 
-    @ApiModelProperty("邮箱")
-    private String email;
+    @ApiModelProperty("父文件夹ID")
+    private Long parentId;
 
     @ApiModelProperty("名称")
-    private String displayName;
+    private String name;
+
+    @ApiModelProperty("排序")
+    private Integer sortOrder;
 
     @ApiModelProperty("创建时间")
     private LocalDateTime createdAt;
