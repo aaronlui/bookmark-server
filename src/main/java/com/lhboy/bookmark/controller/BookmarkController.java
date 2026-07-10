@@ -8,11 +8,15 @@ import com.lhboy.bookmark.service.BookmarkService;
 import com.lhboy.bookmark.vo.BookmarkResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 @Api(tags = "书签")
+@Validated
 @RestController
 @RequestMapping("/api/bookmarks")
 public class BookmarkController {
@@ -29,8 +33,8 @@ public class BookmarkController {
             @RequestParam(required = false) String q,
             @RequestParam(required = false) Boolean favorite,
             @RequestParam(required = false) Boolean archived,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "1") @Min(value = 1, message = "page最小为1") int page,
+            @RequestParam(defaultValue = "20") @Min(value = 1, message = "size最小为1") @Max(value = 100, message = "最大为100") int size) {
         return Result.success(bookmarkService.list(collectionId, q, favorite, archived, page, size));
     }
 

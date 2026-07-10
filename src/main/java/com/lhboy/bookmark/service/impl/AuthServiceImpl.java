@@ -12,21 +12,21 @@ import com.lhboy.bookmark.service.UserService;
 import com.lhboy.bookmark.util.JwtUtil;
 import com.lhboy.bookmark.vo.LoginResponse;
 import com.lhboy.bookmark.vo.UserResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl extends ServiceImpl<UserMapper, User> implements AuthService {
 
-    private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
+    @Autowired
+    private UserService userService;
 
-    public AuthServiceImpl(UserService userService, PasswordEncoder passwordEncoder,  JwtUtil jwtUtil) {
-        this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtUtil;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Override
     public UserResponse register(RegisterRequest request) {

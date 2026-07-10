@@ -22,8 +22,6 @@ public class Bookmark {
 
     private String description;
 
-    private String note;
-
     private String coverUrl;
 
     private String faviconUrl;

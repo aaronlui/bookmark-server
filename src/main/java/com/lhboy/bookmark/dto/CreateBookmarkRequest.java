@@ -5,23 +5,27 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @ApiModel("创建书签")
 @Data
 public class CreateBookmarkRequest {
 
     @NotBlank(message = "url不能为空")
+    @Size(max = 2048, message = "url长度不能超过2048")
+    @Pattern(regexp = "^https?://.+", message = "url必须以http://或https://开头")
     @ApiModelProperty("url")
     private String url;
 
+    @NotBlank(message = "标题不能为空")
+    @Size(max = 100, message = "标题长度不能超过100")
     @ApiModelProperty("标题")
     private String title;
 
+    @Size(max = 500, message = "描述长度不能超过500")
     @ApiModelProperty("描述")
     private String description;
-
-    @ApiModelProperty("笔记")
-    private String note;
 
     @ApiModelProperty("收藏夹ID")
     private Long collectionId;

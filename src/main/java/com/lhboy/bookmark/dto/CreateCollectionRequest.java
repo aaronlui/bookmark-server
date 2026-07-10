@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -12,7 +13,7 @@ import javax.validation.constraints.Size;
 public class CreateCollectionRequest {
 
     @NotBlank(message = "名称不能为空")
-    @Size(max = 100)
+    @Size(max = 100, message = "名称长度不能超过100")
     @ApiModelProperty("名称")
     private String name;
 
@@ -20,5 +21,6 @@ public class CreateCollectionRequest {
     private Long parentId;
 
     @ApiModelProperty("排序")
+    @Min(0)
     private Integer sortOrder;
 }

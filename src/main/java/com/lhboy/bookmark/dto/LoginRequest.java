@@ -12,11 +12,11 @@ import javax.validation.constraints.NotBlank;
 public class LoginRequest {
 
     @ApiModelProperty("邮箱")
-    @NotBlank
+    @NotBlank(message = "邮箱不能为空")
     @Email
     private String email;
 
     @ApiModelProperty("密码")
-    @NotBlank
+    @NotBlank(message = "密码不能为空")
     private String password;
 }

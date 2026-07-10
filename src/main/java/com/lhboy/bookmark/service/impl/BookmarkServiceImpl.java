@@ -14,6 +14,7 @@ import com.lhboy.bookmark.service.BookmarkService;
 import com.lhboy.bookmark.service.CollectionService;
 import com.lhboy.bookmark.service.MetadataService;
 import com.lhboy.bookmark.vo.BookmarkResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -22,13 +23,11 @@ import java.util.stream.Collectors;
 @Service
 public class BookmarkServiceImpl extends ServiceImpl<BookmarkMapper, Bookmark> implements BookmarkService {
 
-    private final CollectionService collectionService;
-    private final MetadataService metadataService;
-    public BookmarkServiceImpl(CollectionService collectionService,
-                               MetadataService metadataService) {
-        this.collectionService = collectionService;
-        this.metadataService = metadataService;
-    }
+    @Autowired
+    private CollectionService collectionService;
+
+    @Autowired
+    private MetadataService metadataService;
 
     @Override
     public PageResult<BookmarkResponse> list(Long collectionId, String q, Boolean favorite, Boolean archived, int page, int size) {
@@ -41,8 +40,7 @@ public class BookmarkServiceImpl extends ServiceImpl<BookmarkMapper, Bookmark> i
                 .eq(Bookmark::getIsArchived, Boolean.TRUE.equals(archived))
                 .and(StringUtils.hasText(q), w -> w
                         .like(Bookmark::getTitle, q)
-                        .or().like(Bookmark::getUrl, q)
-                        .or().like(Bookmark::getNote, q))
+                        .or().like(Bookmark::getUrl, q))
                 .orderByDesc(Bookmark::getUpdatedAt)
                 .page(new Page<>(page, size));
         Page<BookmarkResponse> mapped = new Page<>(mPage.getCurrent(), mPage.getSize(), mPage.getTotal());
@@ -63,13 +61,12 @@ public class BookmarkServiceImpl extends ServiceImpl<BookmarkMapper, Bookmark> i
         bookmark.setUrl(request.getUrl());
         bookmark.setTitle(request.getTitle());
         bookmark.setDescription(request.getDescription());
-        bookmark.setNote(request.getNote());
         bookmark.setIsFavorite(Boolean.TRUE.equals(request.getIsFavorite()));
         bookmark.setIsArchived(false);
 
         save(bookmark);
-        metadataService.fillMetadata(bookmark);
-        updateById(bookmark);
+        // metadataService.fillMetadata(bookmark);
+        // updateById(bookmark);
         return toResponse(bookmark);
     }
 
@@ -90,9 +87,6 @@ public class BookmarkServiceImpl extends ServiceImpl<BookmarkMapper, Bookmark> i
         }
         if (request.getDescription() != null) {
             bookmark.setDescription(request.getDescription());
-        }
-        if (request.getNote() != null) {
-            bookmark.setNote(request.getNote());
         }
         if (request.getIsFavorite() != null) {
             bookmark.setIsFavorite(request.getIsFavorite());
@@ -152,7 +146,6 @@ public class BookmarkServiceImpl extends ServiceImpl<BookmarkMapper, Bookmark> i
                 .url(bookmark.getUrl())
                 .title(bookmark.getTitle())
                 .description(bookmark.getDescription())
-                .note(bookmark.getNote())
                 .coverUrl(bookmark.getCoverUrl())
                 .faviconUrl(bookmark.getFaviconUrl())
                 .isFavorite(bookmark.getIsFavorite())

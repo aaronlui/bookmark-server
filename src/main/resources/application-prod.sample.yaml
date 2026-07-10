@@ -6,7 +6,7 @@ spring:
     password: root
 
 knife4j:
-  enable: true
+  enable: false
 
 jwt:
   secret: your-256-bit-secret-key-change-me-in-production!!

@@ -19,6 +19,7 @@ public class RegisterRequest {
 
     @ApiModelProperty("名称")
     @NotBlank(message = "名称不能为空")
+    @Size(max = 50, message = "名称长度不能超过50")
     private String displayName;
 
     @ApiModelProperty("密码")

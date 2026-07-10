@@ -24,16 +24,6 @@ public class MetadataService {
                     .followRedirects(true)
                     .get();
 
-            String title = firstNonBlank(
-                    doc.select("meta[property=og:title]").attr("content"),
-                    doc.title()
-            );
-
-            String description = firstNonBlank(
-                    doc.select("meta[property=og:description]").attr("content"),
-                    doc.select("meta[name=description]").attr("content")
-            );
-
             String coverUrl = doc.select("meta[property=og:image]").stream()
                     .map(el -> el.absUrl("content"))
                     .filter(StringUtils::hasText)
@@ -46,12 +36,6 @@ public class MetadataService {
                     .findFirst()
                     .orElse(null);
 
-            if (!StringUtils.hasText(bookmark.getTitle()) && StringUtils.hasText(title)) {
-                bookmark.setTitle(title);
-            }
-            if (!StringUtils.hasText(bookmark.getDescription()) && StringUtils.hasText(description)) {
-                bookmark.setDescription(description);
-            }
             if (!StringUtils.hasText(bookmark.getCoverUrl()) && StringUtils.hasText(coverUrl)) {
                 bookmark.setCoverUrl(coverUrl);
             }
@@ -62,14 +46,5 @@ public class MetadataService {
             // 跳过
             log.warn("抓取元数据失败: {}", bookmark.getUrl(), e);
         }
-    }
-
-    private String firstNonBlank(String... values) {
-        for (String value : values) {
-            if (StringUtils.hasText(value)) {
-                return value.trim();
-            }
-        }
-        return null;
     }
 }

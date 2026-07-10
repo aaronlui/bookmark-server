@@ -12,6 +12,7 @@ import com.lhboy.bookmark.service.BookmarkService;
 import com.lhboy.bookmark.service.CollectionService;
 import com.lhboy.bookmark.vo.CollectionResponse;
 import com.lhboy.bookmark.vo.CollectionTreeResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -25,11 +26,9 @@ import java.util.stream.Collectors;
 @Service
 public class CollectionServiceImpl extends ServiceImpl<CollectionMapper, Collection> implements CollectionService {
 
-    private final BookmarkService bookmarkService;
-
-    public CollectionServiceImpl(@Lazy BookmarkService bookmarkService) {
-        this.bookmarkService = bookmarkService;
-    }
+    @Autowired
+    @Lazy
+    private BookmarkService bookmarkService;
 
     @Override
     public List<CollectionResponse> listByCurrentUser() {
