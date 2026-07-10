@@ -23,7 +23,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/doc.html",                  // Knife4j
                         "/webjars/**",
                         "/swagger-resources/**",
-                        "/v2/**"
+                        "/swagger-ui/**",
+                        "/v2/**",
+                        "/v3/**",
+                        "/favicon.ico"
                 );
     }
 }

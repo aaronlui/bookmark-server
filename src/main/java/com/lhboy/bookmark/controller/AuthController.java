@@ -39,6 +39,6 @@ public class AuthController {
     @ApiOperation(value = "当前用户")
     @GetMapping("/me")
     public Result<UserResponse> me() {
-        return Result.success(authService.me(UserContext.getUserId()));
+        return Result.success(authService.me(UserContext.requireUserId()));
     }
 }

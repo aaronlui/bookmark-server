@@ -8,9 +8,11 @@ import com.lhboy.bookmark.dto.UpdateCollectionRequest;
 import com.lhboy.bookmark.entity.Collection;
 import com.lhboy.bookmark.exception.BusinessException;
 import com.lhboy.bookmark.mapper.CollectionMapper;
+import com.lhboy.bookmark.service.BookmarkService;
 import com.lhboy.bookmark.service.CollectionService;
 import com.lhboy.bookmark.vo.CollectionResponse;
 import com.lhboy.bookmark.vo.CollectionTreeResponse;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -22,9 +24,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class CollectionServiceImpl extends ServiceImpl<CollectionMapper, Collection> implements CollectionService {
+
+    private final BookmarkService bookmarkService;
+
+    public CollectionServiceImpl(@Lazy BookmarkService bookmarkService) {
+        this.bookmarkService = bookmarkService;
+    }
+
     @Override
     public List<CollectionResponse> listByCurrentUser() {
-        Long userId = UserContext.getUserId();
+        Long userId = UserContext.requireUserId();
         return lambdaQuery()
                 .eq(Collection::getUserId, userId)
                 .orderByAsc(Collection::getSortOrder)
@@ -63,7 +72,7 @@ public class CollectionServiceImpl extends ServiceImpl<CollectionMapper, Collect
 
     @Override
     public CollectionResponse create(CreateCollectionRequest request) {
-        Long userId = UserContext.getUserId();
+        Long userId = UserContext.requireUserId();
 
         Long parentId = request.getParentId();
         if (parentId != null && parentId == 0L) {
@@ -145,12 +154,16 @@ public class CollectionServiceImpl extends ServiceImpl<CollectionMapper, Collect
             throw new BusinessException(ResultCode.BAD_REQUEST, "请先删除子文件夹");
         }
 
+        if (bookmarkService.existsByCollectionId(collection.getUserId(), id)) {
+            throw new BusinessException(ResultCode.BAD_REQUEST, "请先移走或删除该收藏夹下的书签");
+        }
+
         removeById(id);
     }
 
     @Override
     public Collection getOwnedCollection(Long id) {
-        Long userId = UserContext.getUserId();
+        Long userId = UserContext.requireUserId();
         Collection collection = getById(id);
         if (collection == null) {
             throw new BusinessException(ResultCode.NOT_FOUND);
@@ -160,7 +173,7 @@ public class CollectionServiceImpl extends ServiceImpl<CollectionMapper, Collect
         }
         return collection;
     }
-    
+
     private void assertNotDescendant(Long nodeId, Long newParentId) {
         Long current = newParentId;
 
