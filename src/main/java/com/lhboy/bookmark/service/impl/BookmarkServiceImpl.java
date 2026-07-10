@@ -88,6 +88,11 @@ public class BookmarkServiceImpl extends ServiceImpl<BookmarkMapper, Bookmark> i
         if (request.getDescription() != null) {
             bookmark.setDescription(request.getDescription());
         }
+        if (request.getCollectionId() != null) {
+            Long collectionId = normalizeCollectionId(request.getCollectionId());
+            validateCollectionOwnership(collectionId);
+            bookmark.setCollectionId(collectionId);
+        }
         if (request.getIsFavorite() != null) {
             bookmark.setIsFavorite(request.getIsFavorite());
         }
