@@ -12,6 +12,7 @@ import com.lhboy.bookmark.exception.BusinessException;
 import com.lhboy.bookmark.mapper.BookmarkMapper;
 import com.lhboy.bookmark.service.BookmarkService;
 import com.lhboy.bookmark.service.CollectionService;
+import com.lhboy.bookmark.service.MetadataService;
 import com.lhboy.bookmark.vo.BookmarkResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -22,8 +23,11 @@ import java.util.stream.Collectors;
 public class BookmarkServiceImpl extends ServiceImpl<BookmarkMapper, Bookmark> implements BookmarkService {
 
     private final CollectionService collectionService;
-    public BookmarkServiceImpl(CollectionService collectionService) {
+    private final MetadataService metadataService;
+    public BookmarkServiceImpl(CollectionService collectionService,
+                               MetadataService metadataService) {
         this.collectionService = collectionService;
+        this.metadataService = metadataService;
     }
 
     @Override
@@ -64,6 +68,8 @@ public class BookmarkServiceImpl extends ServiceImpl<BookmarkMapper, Bookmark> i
         bookmark.setIsArchived(false);
 
         save(bookmark);
+        metadataService.fillMetadata(bookmark);
+        updateById(bookmark);
         return toResponse(bookmark);
     }
 
